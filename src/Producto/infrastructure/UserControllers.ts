@@ -1,4 +1,3 @@
-
 import { Request, Response } from 'express';
 import { CreateUser } from '../application/CreateUser';
 import { GetUser } from '../application/GetUser';
@@ -16,11 +15,9 @@ export class ProductosController {
             const dataproducto = await this.putuser.putUser(Nombre, Telefono, Correo);
             res.status(200).json(dataproducto)
         } catch (error) {
-
             res.status(500).json({ error: "servidor error" })
         }
     }
-
 
     deleteById = async (req: Request, res: Response) => {
         try {
@@ -44,7 +41,6 @@ export class ProductosController {
         }
     }
 
-
     getProductoid = async (req: Request, res: Response) => {
         try {
             console.log("Este es el producto");
@@ -60,6 +56,9 @@ export class ProductosController {
     create = async (req: Request, res: Response) => {
         try {
             const { Nombre, Telefono, Correo } = req.body;
+
+          
+
             const onlyLetters = /^[A-Za-z]+$/.test(Nombre);
             if (!onlyLetters) {
                 return res.status(400).json({ error: "En Nombre no debe llevar Letras" });
@@ -68,6 +67,13 @@ export class ProductosController {
             if (!onlyNumbers) {
                 return res.status(400).json({ error: "En Telefono solo deben ser números" });
             }
+
+              // Verificar si el correo ya existe en la base de datos
+              const existingUser = await this.getuserid.Productoid(Correo);
+              if (existingUser) {
+                  return res.status(400).json({ error: "El correo ya está registrado" });
+              }
+
             const dataproducto = await this.createUser.createProducto(Nombre, Telefono, Correo);
             res.status(200).json(dataproducto);
         } catch (error) {
